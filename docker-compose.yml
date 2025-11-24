@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  nodejs-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nodejs-qr-api
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - LOG_LEVEL=info
+      - MAX_MATRIX_SIZE=1000
+    env_file:
+      - .env
+    networks:
+      - qr-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Opcional: API de Go (si la tienes)
+  # go-api:
+  #   build:
+  #     context: ../go-api
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - qr-network
+
+networks:
+  qr-network:
+    driver: bridge
