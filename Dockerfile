@@ -6,8 +6,8 @@ WORKDIR /app
 # Copiar archivos de dependencias
 COPY package*.json ./
 
-# Instalar dependencias
-RUN npm ci --only=production && npm cache clean --force
+# Instalar dependencias (sin package-lock)
+RUN npm install --production && npm cache clean --force
 
 # Stage 2: Production
 FROM node:18-alpine
@@ -30,7 +30,7 @@ USER nodejs
 # Exponer puerto
 EXPOSE 3001
 
-# Variables de entorno por defecto
+# Variables de entorno
 ENV NODE_ENV=production \
     PORT=3001
 
