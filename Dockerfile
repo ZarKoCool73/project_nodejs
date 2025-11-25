@@ -6,7 +6,7 @@ WORKDIR /app
 # Copiar archivos de dependencias
 COPY package*.json ./
 
-# Instalar dependencias (sin package-lock)
+# Instalar dependencias (produce node_modules)
 RUN npm install --production && npm cache clean --force
 
 # Stage 2: Production
@@ -21,8 +21,11 @@ WORKDIR /app
 # Copiar dependencias desde builder
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 
-# Copiar código fuente
+# Copiar el código fuente
 COPY --chown=nodejs:nodejs . .
+
+# 🔥 IMPORTANTE: copiar archivo .env (si existe)
+COPY --chown=nodejs:nodejs .env .env
 
 # Cambiar a usuario no-root
 USER nodejs
@@ -30,9 +33,9 @@ USER nodejs
 # Exponer puerto
 EXPOSE 3001
 
-# Variables de entorno
-ENV NODE_ENV=production \
-    PORT=3001
+# ❗ No forzar NODE_ENV aquí, dejar que lo maneje docker-compose
+# ENV NODE_ENV=production \
+#     PORT=3001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
