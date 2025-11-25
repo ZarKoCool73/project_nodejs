@@ -13,4 +13,3 @@ README.md
 tests
 .dockerignore
 Dockerfile
-docker-compose.yml
