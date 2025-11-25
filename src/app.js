@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
 });
 
 // Rutas de la API
-app.use('/api', routes);
+app.use('/api/v1', routes);
 
 // Manejo de rutas no encontradas
 app.use((req, res) => {
